@@ -1,0 +1,48 @@
+{
+    "name": "wearesho-team/qoreid",
+    "description": "QoreID PHP Integration SDK",
+    "type": "library",
+    "require": {
+        "php": ">=7.4",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^7.4.5",
+        "horat1us/environment-config": "^1.5",
+        "psr/simple-cache": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "squizlabs/php_codesniffer": "^3.7"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Wearesho\\QoreId\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Wearesho\\QoreId\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Horat1us",
+            "email": "reclamme@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "config": {
+        "process-timeout": 1800,
+        "sort-packages": true,
+        "platform": {
+            "php": "7.4"
+        }
+    },
+    "scripts": {
+        "lint": "./vendor/bin/phpcs --standard=PSR12 ./src ./tests",
+        "phpcbf": "./vendor/bin/phpcbf --standard=PSR12 ./src ./tests",
+        "test": "./vendor/bin/phpunit",
+        "cover": "./vendor/bin/phpunit --coverage-text",
+        "cover-xml": "./vendor/bin/phpunit --coverage-xml ./coverage.xml"
+    }
+}
