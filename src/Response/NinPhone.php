@@ -6,13 +6,16 @@ namespace Wearesho\QoreId\Response;
 
 class NinPhone
 {
+    public const STATUS_VERIFIED = 'verified';
+    public const STATUS_MISMATCH = 'id_mismatch';
+
     private string $status;
-    private int $nin;
+    private ?int $nin;
 
     private array $fieldMatches;
     private array $details;
 
-    public function __construct(string $status, int $nin, array $fieldMatches, array $details)
+    public function __construct(string $status, ?int $nin, array $fieldMatches = [], array $details = [])
     {
         $this->status = $status;
         $this->nin = $nin;
@@ -25,7 +28,7 @@ class NinPhone
         return $this->status;
     }
 
-    public function getNin(): int
+    public function getNin(): ?int
     {
         return $this->nin;
     }

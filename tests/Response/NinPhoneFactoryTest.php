@@ -35,7 +35,7 @@ final class NinPhoneFactoryTest extends TestCase
             ],
         ];
 
-        $factory = new QoreId\Response\NinPhoneFactory;
+        $factory = new QoreId\Response\NinPhoneFactory();
         $ninPhone = $factory->createFromApiResponse($data);
 
         $this->assertSame("verified", $ninPhone->getStatus());
@@ -55,13 +55,48 @@ final class NinPhoneFactoryTest extends TestCase
         ], $details);
     }
 
+    public function testCreatewFromDataArrayMismatch(): void
+    {
+        $data = [
+            "id" => 10122355,
+            "applicant" => [
+                "firstname" => "Abuja",
+                "lastname" => "Federal"
+            ],
+            "summary" => [
+                "nin_check" => [
+                    "status" => "NO_MATCH",
+                    "fieldMatches" => [
+                        "firstname" => false,
+                        "lastname" => false
+                    ]
+                ]
+            ],
+            "status" => [
+                "state" => "complete",
+                "status" => "id_mismatch"
+            ]
+        ];
+
+        $factory = new QoreId\Response\NinPhoneFactory();
+        $ninPhone = $factory->createFromApiResponse($data);
+
+        $this->assertSame('id_mismatch', $ninPhone->getStatus());
+        $this->assertSame([
+            "firstname" => false,
+            "lastname" => false
+        ], $ninPhone->getFieldMatches());
+        $this->assertNull($ninPhone->getNin());
+        $this->assertEmpty($ninPhone->getDetails());
+    }
+
     public function testCreateFromDataArrayWithMissingKeys(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid data array: required status key is missing.');
 
         $data = [];
-        $factory = new QoreId\Response\NinPhoneFactory;
+        $factory = new QoreId\Response\NinPhoneFactory();
         $factory->createFromApiResponse($data);
     }
 
@@ -74,7 +109,7 @@ final class NinPhoneFactoryTest extends TestCase
             "nin" => ["nin" => "12345"],
             "summary" => ["nin_check" => ["fieldMatches" => []]]
         ];
-        $factory = new QoreId\Response\NinPhoneFactory;
+        $factory = new QoreId\Response\NinPhoneFactory();
         $factory->createFromApiResponse($data);
     }
 
@@ -84,10 +119,10 @@ final class NinPhoneFactoryTest extends TestCase
         $this->expectExceptionMessage('Invalid data array: required nin key is missing.');
 
         $data = [
-            "status" => ["status" => "value"],
+            "status" => ["status" => "verified"],
             "summary" => ["nin_check" => ["fieldMatches" => []]]
         ];
-        $factory = new QoreId\Response\NinPhoneFactory;
+        $factory = new QoreId\Response\NinPhoneFactory();
         $factory->createFromApiResponse($data);
     }
 
@@ -97,10 +132,10 @@ final class NinPhoneFactoryTest extends TestCase
         $this->expectExceptionMessage('Invalid data array: required fieldMatches key is missing.');
 
         $data = [
-            "status" => ["status" => "value"],
-            "nin" => ["nin" => "12345"]
+            "status" => ["status" => "verified"],
+            "nin" => ["nin" => "99999999999"]
         ];
-        $factory = new QoreId\Response\NinPhoneFactory;
+        $factory = new QoreId\Response\NinPhoneFactory();
         $factory->createFromApiResponse($data);
     }
 }
