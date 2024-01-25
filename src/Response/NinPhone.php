@@ -10,12 +10,11 @@ class NinPhone
     public const STATUS_MISMATCH = 'id_mismatch';
 
     private string $status;
-    private ?int $nin;
-
     private array $fieldMatches;
-    private array $details;
+    private ?int $nin;
+    private ?array $details;
 
-    public function __construct(string $status, ?int $nin, array $fieldMatches = [], array $details = [])
+    public function __construct(string $status, ?int $nin, array $fieldMatches, ?array $details = null)
     {
         $this->status = $status;
         $this->nin = $nin;
@@ -28,17 +27,17 @@ class NinPhone
         return $this->status;
     }
 
-    public function getNin(): ?int
-    {
-        return $this->nin;
-    }
-
     public function getFieldMatches(): array
     {
         return $this->fieldMatches;
     }
 
-    public function getDetails(): array
+    public function getNin(): ?int
+    {
+        return $this->nin;
+    }
+
+    public function getDetails(): ?array
     {
         return $this->details;
     }

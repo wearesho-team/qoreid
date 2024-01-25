@@ -16,10 +16,10 @@ class NinPhoneFactory
         );
     }
 
-    private function getDetails(array $apiData): array
+    private function getDetails(array $apiData): ?array
     {
         if ($this->isMismatchStatus($apiData)) {
-            return [];
+            return null;
         }
         $details = $apiData['nin'];
         if (!is_array($details)) {
