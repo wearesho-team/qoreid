@@ -55,6 +55,63 @@ final class NinPhoneFactoryTest extends TestCase
         ], $details);
     }
 
+    public function testCreateFromDataArrayTransportedMatch(): void
+    {
+        $data = $array = [
+            "summary" => [
+                "nin_check" => [
+                    "status" => "TRANSPOSED_MATCH",
+                    "fieldMatches" => [
+                        "firstname" => true,
+                        "lastname" => true
+                    ]
+                ],
+            ],
+            "status" => [
+                "state" => "complete",
+                "status" => "verified",
+            ],
+            "nin" => [
+                "nin" => "63184876213",
+                "firstname" => "Bunch",
+                "lastname" => "Dillon",
+                "middlename" => "John",
+                "phone" => "08000000000",
+                "gender" => "f",
+                "birthdate" => "14-02-1984",
+                "photo" => "base 64 encoded",
+                "residence" => [
+                    "address1" => "JOHN ESTATE",
+                    "lga" => "Ojo",
+                    "state" => "Lagos"
+                ]
+            ]
+        ];
+
+        $factory = new QoreId\Response\NinPhoneFactory();
+        $ninPhone = $factory->createFromApiResponse($data);
+
+        $this->assertSame("verified", $ninPhone->getStatus());
+        $this->assertSame(63184876213, $ninPhone->getNin());
+        $this->assertSame(['firstname' => true, 'lastname' => true], $ninPhone->getFieldMatches());
+        $details = $ninPhone->getDetails();
+        unset($details['nin']);
+        $this->assertSame([
+            'firstname' => "Bunch",
+            "lastname" => "Dillon",
+            "middlename" => "John",
+            "phone" => "08000000000",
+            "gender" => "f",
+            "birthdate" => "14-02-1984",
+            "photo" => "base 64 encoded",
+            "residence" => [
+                "address1" => "JOHN ESTATE",
+                "lga" => "Ojo",
+                "state" => "Lagos"
+            ]
+        ], $details);
+    }
+
     public function testCreatewFromDataArrayMismatch(): void
     {
         $data = [
