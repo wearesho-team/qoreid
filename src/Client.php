@@ -10,6 +10,7 @@ use GuzzleHttp;
 class Client
 {
     private const ENDPOINT_NIN_WITH_PHONE_NUMBER = 'v1/ng/identities/nin-phone';
+    private const ENDPOINT_NIN_IDENTIFY = 'v1/ng/identities/nin';
 
     private Auth\Client $authClient;
     private GuzzleHttp\ClientInterface $client;
@@ -46,6 +47,31 @@ class Client
     private function getIdentifyNinPhoneEndpoint(string $phone): string
     {
         return static::ENDPOINT_NIN_WITH_PHONE_NUMBER . '/' . $phone;
+    }
+
+    public function identifyNin(Request\NinIdentify $request): Response\NinPhone
+    {
+        $response = $this->request(
+            $this->getIdentifyNinEndpoint($request->getNin()),
+            'POST',
+            $request->jsonSerialize()
+        );
+
+        $factory = new Response\NinPhoneFactory();
+        try {
+            return $factory->createFromApiResponse($response);
+        } catch (\InvalidArgumentException $exception) {
+            throw new ClientException(
+                "Invalid IdentifyNinPhone response: " . $exception->getMessage(),
+                201,
+                $exception
+            );
+        }
+    }
+
+    private function getIdentifyNinEndpoint(int $nin): string
+    {
+        return static::ENDPOINT_NIN_IDENTIFY . '/' . $nin;
     }
 
     private function request(string $endpoint, string $method, array $data): array
