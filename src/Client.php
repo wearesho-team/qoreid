@@ -76,7 +76,7 @@ class Client
      * @throws ClientException
      * @throws NoMatchException
      */
-    public function nuban(Request\Nuban $request): Response\NubanDetails
+    public function identifyNuban(Request\Nuban $request): Response\NubanDetails
     {
         $response = $this->request(
             static::ENDPOINT_NUBAN_IDENTIFY,
