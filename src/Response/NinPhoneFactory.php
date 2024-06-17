@@ -6,12 +6,15 @@ namespace Wearesho\QoreId\Response;
 
 class NinPhoneFactory
 {
+    use StatusTrait;
+    use FieldMatchesTrait;
+
     public function createFromApiResponse(array $data): NinPhone
     {
         return new NinPhone(
             $this->getStatus($data),
             $this->getNin($data),
-            $this->getFieldMatches($data),
+            $this->getFieldMatches('nin_check', $data),
             $this->getDetails($data)
         );
     }
@@ -28,37 +31,6 @@ class NinPhoneFactory
         // remove the repeated 'nin' from 'details'
         unset($details['nin']);
         return $details;
-    }
-
-    private function getStatus(array $apiData): string
-    {
-        if (!array_key_exists('status', $apiData) || !array_key_exists('status', $apiData['status'])) {
-            throw new \InvalidArgumentException('Invalid data array: required status key is missing.');
-        }
-        $status = $apiData['status']['status'];
-        if (!in_array($status, [NinPhone::STATUS_VERIFIED, NinPhone::STATUS_MISMATCH])) {
-            throw new \InvalidArgumentException('Invalid status value: ' . $status);
-        }
-        return $status;
-    }
-
-    private function getFieldMatches(array $apiData): array
-    {
-        if (
-            !array_key_exists('summary', $apiData)
-            || !array_key_exists(
-                'nin_check',
-                $apiData['summary']
-            )
-            || !array_key_exists('fieldMatches', $apiData['summary']['nin_check'])
-        ) {
-            throw new \InvalidArgumentException('Invalid data array: required fieldMatches key is missing.');
-        }
-        $fieldMatches = $apiData['summary']['nin_check']['fieldMatches'];
-        if (!is_array($fieldMatches)) {
-            throw new \InvalidArgumentException('Invalid fieldMatches value, expected array.');
-        }
-        return $fieldMatches;
     }
 
     private function getNin(array $apiData): ?int

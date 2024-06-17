@@ -53,17 +53,17 @@ class Client
     private function generateAuthCacheKey(): string
     {
         return static::CACHE_KEY_PREFIX . sha1(
-                strrev(
-                    implode(
-                        ',',
-                        [
+            strrev(
+                implode(
+                    ',',
+                    [
                             static::CACHE_KEY_AUTHORIZATION,
                             $this->config->getClientId(),
                             $this->config->getClientSecret()
                         ]
-                    )
                 )
-            );
+            )
+        );
     }
 
     private function requestAuthToken(): Response

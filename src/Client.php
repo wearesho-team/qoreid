@@ -11,6 +11,7 @@ class Client
 {
     private const ENDPOINT_NIN_WITH_PHONE_NUMBER = 'v1/ng/identities/nin-phone';
     private const ENDPOINT_NIN_IDENTIFY = 'v1/ng/identities/nin';
+    private const ENDPOINT_NUBAN_IDENTIFY = 'v1/ng/identities/nuban';
 
     private Auth\Client $authClient;
     private GuzzleHttp\ClientInterface $client;
@@ -63,6 +64,31 @@ class Client
         } catch (\InvalidArgumentException $exception) {
             throw new ClientException(
                 "Invalid IdentifyNinPhone response: " . $exception->getMessage(),
+                201,
+                $exception
+            );
+        }
+    }
+
+    /**
+     * @param Request\Nuban $request
+     * @return Response\NubanDetails
+     * @throws ClientException
+     * @throws NoMatchException
+     */
+    public function nuban(Request\Nuban $request): Response\NubanDetails
+    {
+        $response = $this->request(
+            static::ENDPOINT_NUBAN_IDENTIFY,
+            'POST',
+            $request->jsonSerialize()
+        );
+        $factory = new Response\NubanDetailsFactory();
+        try {
+            return $factory->createFromApiResponse($response);
+        } catch (\InvalidArgumentException $exception) {
+            throw new ClientException(
+                "Invalid IdentifyNuban response: " . $exception->getMessage(),
                 201,
                 $exception
             );
