@@ -37,6 +37,6 @@ class Utils
 
     public static function decodeResponse(ResponseInterface $response): array
     {
-        return json_decode($response->getBody()->__toString(), true, JSON_THROW_ON_ERROR);
+        return json_decode($response->getBody()->__toString(), true, 512, JSON_THROW_ON_ERROR);
     }
 }
