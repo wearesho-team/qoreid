@@ -87,8 +87,9 @@ Access tokens are requested on first use and cached until they expire.
 
 ### Errors
 - `QoreId\ClientException` - QoreID rejected the request (4xx response, the message contains its status code and message),
-  or returned a response this package can't parse.
+  or its response is missing expected fields.
 - `QoreId\NoMatchException` - NUBAN check status is not `verified`.
+- `\JsonException` - response body is not valid JSON.
 - Other Guzzle exceptions (5xx responses, network errors) are not wrapped.
 
 ## Development
