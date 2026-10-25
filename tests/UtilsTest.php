@@ -30,6 +30,15 @@ final class UtilsTest extends TestCase
         $this->assertSame($bodyArray, $result);
     }
 
+    public function testDecodeResponseInvalidJson(): void
+    {
+        $this->expectException(\JsonException::class);
+
+        $response = $this->response->withBody(GuzzleHttp\Psr7\Utils::streamFor('<html></html>'));
+
+        Utils::decodeResponse($response);
+    }
+
     public function testHandleClientExceptionWithoutStatusCode(): void
     {
         $this->expectException(ClientException::class);
